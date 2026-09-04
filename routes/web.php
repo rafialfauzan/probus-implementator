@@ -35,6 +35,7 @@ Route::get('/activitylog', [HomeController::class, 'activitylog'])->middleware([
 Route::get('/mrq/{id}', [HomeController::class, 'morerq'])->middleware(['auth'])->name('morerequest');
 
 // Route Request 
+Route::get('/getOutlet/{search?}', [RequestController::class, 'getOutlet'])->name('getOutlet');
 Route::get('/detailrequest/{id}',[RequestController::class, 'detailrequest'])->middleware(['auth'])->name('detailrequest');
 Route::get('/mrq', [RequestController::class, 'mrq'])->middleware(['auth'])->name('mrq');
 Route::get('/createrq', [RequestController::class, 'createrq'])->middleware(['auth'])->name('createrq');

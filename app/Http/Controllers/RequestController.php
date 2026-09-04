@@ -33,12 +33,29 @@ class RequestController extends Controller
         return view('tablerq.mrq');
     }
 
+    public function getOutlet(Request $request, $search = null)
+    {
+        $search = $search ?? $request->query('search');
+        $query = Outlet::query();
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('moutlet', 'aktif')) {
+            $query->where('aktif', 1);
+        }
+
+        if (!empty($search)) {
+            $query->where('nm_out', 'like', '%' . $search . '%');
+        }
+
+        return response()->json([
+            'data' => $query->limit(10)->get()
+        ]);
+    }
+
     public function createrq(){
         $tag = Tag::all();
         $kategori = Kategori::all();
         $status = Status::all();
-        $outlet = Outlet::all();
-        return view('tablerq.createrq', compact('tag', 'kategori','status','outlet'));
+        return view('tablerq.createrq', compact('tag', 'kategori','status'));
     }
 
     public function editrq($id){
@@ -47,8 +64,7 @@ class RequestController extends Controller
         $tag = Tag::all();
         $kategori = Kategori::all();
         $status = Status::all();
-        $outlet = Outlet::all();
-        return view('tablerq.editrq', compact('tag','kategori', 'status', 'req', 'img','outlet'));
+        return view('tablerq.editrq', compact('tag','kategori', 'status', 'req', 'img'));
     }
 
     public function store(Request $request){

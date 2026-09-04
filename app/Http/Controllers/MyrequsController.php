@@ -18,7 +18,7 @@ class MyrequsController extends Controller
         $text = 'Are you sure you want to delete this data?';
         confirmDelete($title, $text);
         $id = Auth::user()->id;
-        $req = \App\Models\Request::where('user_id',$id)->latest()->get();
+        $req = \App\Models\Request::where('user_id',$id)->latest()->paginate(10);
         return view('tablemyrequs.myrequest', compact('req'));
     }
 
@@ -27,7 +27,7 @@ class MyrequsController extends Controller
         $text = 'Are you sure you want to delete this data?';
         confirmDelete($title, $text);
         $id = Auth::user()->id;
-        $updt = UpdateSystem::where('user_id',$id)->latest()->get();
+        $updt = UpdateSystem::where('user_id',$id)->latest()->paginate(10);
         return view('tablemyrequs.myupdatesystem', compact('updt'));
     }
 }

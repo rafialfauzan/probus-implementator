@@ -15,20 +15,32 @@
                                   <img src="/img/material/user1.png" />
                                 </div>
                             </div>
-                            <div class="card-body flex md:flex-row flex-col">
-                              <div class="px-4 w-full md:justify-items-start justify-items-center mb-3">
-                                
-                                <h2 class="card-title">{{ Auth::user()->name }}</h2>
-                                <p class="text-justify my-2"><i class="fa-solid fa-envelope"></i> {{ Auth::user()->email }}</p>
-                                <a href="/editprofile/{{ Auth::user()->id }}"><button class="btn btn-sm btn-neutral rounded-2xl text-white">edit profile <i class="fa-solid fa-pen-to-square"></i></button></a>
-                                <a href="/editpassacc"><button class="btn btn-sm btn-neutral rounded-2xl text-white">change password <i class="fa-solid fa-key"></i></button></a>
-                                
+                            <div class="card-body flex md:flex-row flex-col justify-between items-center md:items-start pt-6">
+                              <div class="px-4 flex-1 md:text-left text-center mb-4 md:mb-0">
+                                <h2 class="card-title text-2xl font-bold justify-center md:justify-start">{{ Auth::user()->name }}</h2>
+                                <p class="my-2 flex items-center justify-center md:justify-start gap-2 text-gray-600"><i class="fa-solid fa-envelope text-gray-400"></i> {{ Auth::user()->email }}</p>
+                                <div class="flex flex-wrap gap-2 justify-center md:justify-start mt-3">
+                                    <a href="/editprofile/{{ Auth::user()->id }}"><button class="btn btn-sm btn-neutral rounded-2xl text-white">edit profile <i class="fa-solid fa-pen-to-square"></i></button></a>
+                                    <a href="/editpassacc"><button class="btn btn-sm btn-neutral rounded-2xl text-white">change password <i class="fa-solid fa-key"></i></button></a>
+                                </div>
                               </div>
-                              <div class="px-4 w-full md:justify-items-end justify-items-center content-center">
-                                <p>User Tag <i class="fa-solid fa-user-tag"></i></p>
-                                <div class="badge badge-outline badge-accent mb-4">{{ Auth::user()->tag->name }}</div>
-                                <p>User Type <i class="fa-regular fa-address-card"></i></p>
-                                <div class="badge badge-outline badge-accent">{{ Auth::user()->usertype }}</div>
+                              <div class="px-4 shrink-0 flex flex-col md:items-end items-center justify-center gap-3 mt-4 md:mt-0">
+                                <div class="flex items-center gap-2.5">
+                                  <span class="text-sm font-medium text-gray-600 flex items-center gap-1.5">
+                                    User Tag <i class="fa-solid fa-user-tag text-primary"></i>
+                                  </span>
+                                  <div class="badge badge-outline badge-accent font-semibold px-3 py-2">
+                                    {{ Auth::user()->tag ? Auth::user()->tag->name : '-' }}
+                                  </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                  <span class="text-sm font-medium text-gray-600 flex items-center gap-1.5">
+                                    User Type <i class="fa-regular fa-address-card text-primary"></i>
+                                  </span>
+                                  <div class="badge badge-outline badge-accent font-semibold px-3 py-2 capitalize">
+                                    {{ Auth::user()->usertype }}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -44,9 +56,9 @@
                                     <table class="table-fixed w-full">
                                         <thead class="bg-gray-300 text-black">
                                             <tr>
-                                                <th class="p-3 text-sm font-bold tracking-wide text-left rounded-tl-xl">Title</th>
-                                                <th class="p-3 text-sm font-bold tracking-wide text-left">Status</th>
-                                                <th class="p-3 text-sm font-bold tracking-wide text-left rounded-tr-xl">Action</th>
+                                                <th class="p-3 text-sm font-bold tracking-wide text-left rounded-tl-xl w-7/12">Title</th>
+                                                <th class="p-3 text-sm font-bold tracking-wide text-left w-3/12">Status</th>
+                                                <th class="p-3 text-sm font-bold tracking-wide text-center rounded-tr-xl w-2/12">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -63,10 +75,12 @@
                                                 }
                                             @endphp
                                             <tr>
-                                                <td class="p-3 text-lg text-abugelap"><a href="/detailrequest/{{ $rq->id }}" class="hover:underline">{{ Str::limit($rq->judul, 20, '...') }}</a></td>
+                                                <td class="p-3 text-lg text-abugelap truncate"><a href="/detailrequest/{{ $rq->id }}" class="hover:underline" title="{{ $rq->judul }}">{{ Str::limit($rq->judul, 60, '...') }}</a></td>
                                                 <td class="p-3 text-sm text-abugelap"><div class="badge {{ $bg }} badge-lg rounded text-white">{{ $rq->status->name }}</div></td>
-                                                <td class="p-3 text-xl text-abugelap"><a class="hover:text-black m-2" href="/editrq/{{ $rq->id }}"><i class="fa-solid fa-pen"></i></a>
-                                                    <a data-confirm-delete="true" class="hover:text-black m-2" href="/deletereq/{{ $rq->id }}"><i class="fa-solid fa-trash"></i></a></td>
+                                                <td class="p-3 text-xl text-abugelap text-center whitespace-nowrap">
+                                                    <a class="hover:text-black mx-2" href="/editrq/{{ $rq->id }}"><i class="fa-solid fa-pen"></i></a>
+                                                    <a data-confirm-delete="true" class="hover:text-black mx-2" href="/deletereq/{{ $rq->id }}"><i class="fa-solid fa-trash"></i></a>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -81,18 +95,20 @@
                                     <table class="table-fixed w-full">
                                         <thead class="bg-gray-300 text-black">
                                             <tr>
-                                                <th class="p-3 text-sm font-bold tracking-wide text-left rounded-tl-xl">Title</th>
-                                                <th class="p-3 text-sm font-bold tracking-wide text-left">from Request</th>
-                                                <th class="p-3 text-sm font-bold tracking-wide text-left rounded-tr-xl">Action</th>
+                                                <th class="p-3 text-sm font-bold tracking-wide text-left rounded-tl-xl w-6/12">Title</th>
+                                                <th class="p-3 text-sm font-bold tracking-wide text-left w-4/12">from Request</th>
+                                                <th class="p-3 text-sm font-bold tracking-wide text-center rounded-tr-xl w-2/12">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($updt as $up)
                                                 <tr>
-                                                    <td class="p-3 text-lg text-abugelap"><a href="/detailus/{{ $up->id }}" class="hover:underline">{{ Str::limit($up->judul, 25, '...') }}</a></td>
-                                                    <td class="p-3 text-lg text-abugelap"><a href="/detailrequest/{{ $up->request_id }}" class="hover:underline">{{ $up->request->judul }}</a></td>
-                                                    <td class="p-3 text-xl text-abugelap"><a class="hover:text-black m-2" href="/editus/{{ $up->id }}"><i class="fa-solid fa-pen"></i></a>
-                                                        <a data-confirm-delete="true" class="hover:text-black m-2" href="/deleteus/{{ $up->id }}"><i class="fa-solid fa-trash"></i></a></td>
+                                                    <td class="p-3 text-lg text-abugelap truncate"><a href="/detailus/{{ $up->id }}" class="hover:underline" title="{{ $up->judul }}">{{ Str::limit($up->judul, 50, '...') }}</a></td>
+                                                    <td class="p-3 text-lg text-abugelap truncate"><a href="/detailrequest/{{ $up->request_id }}" class="hover:underline" title="{{ $up->request ? $up->request->judul : '' }}">{{ $up->request ? Str::limit($up->request->judul, 40, '...') : '-' }}</a></td>
+                                                    <td class="p-3 text-xl text-abugelap text-center whitespace-nowrap">
+                                                        <a class="hover:text-black mx-2" href="/editus/{{ $up->id }}"><i class="fa-solid fa-pen"></i></a>
+                                                        <a data-confirm-delete="true" class="hover:text-black mx-2" href="/deleteus/{{ $up->id }}"><i class="fa-solid fa-trash"></i></a>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

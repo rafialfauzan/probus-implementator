@@ -30,7 +30,7 @@ class HomeController extends Controller
     }
 
     public function morerq($id){
-        $data = \App\Models\Request::where('status_id', $id)->get();
+        $data = \App\Models\Request::where('status_id', $id)->latest()->paginate(12);
         $dataid = $id;
         return view('tablerq.mrq',compact('data','dataid'));
     }

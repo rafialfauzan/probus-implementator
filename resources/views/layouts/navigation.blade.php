@@ -50,9 +50,6 @@
                             <x-dropdown-link :href="route('kategori')">
                                     {{ __('Category List') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('client')">
-                                    {{ __('Outlet List') }}
-                            </x-dropdown-link>
                             @can('admin')
                             <x-dropdown-link :href="route('user')">
                                     {{ __('User List') }}
@@ -102,7 +99,7 @@
                             <div><i class="fa-solid fa-user"></i> {{ Auth::user()->name }} </div>
 
                             @if (count($rq1) >= 1)
-                            <span class="indicator-item badge badge-accent text-white ml-2">ʀ</span>
+                            <span class="indicator-item badge badge-accent text-white ml-2">{{ count($rq1) }}</span>
                             @endif
 
                             <div class="ml-1">

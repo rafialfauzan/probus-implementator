@@ -40,6 +40,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-4">
+                        {{ $req->links() }}
+                    </div>
                 </div>
             </div>
         </div>
