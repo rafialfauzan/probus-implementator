@@ -1,5 +1,6 @@
 @php
     use Carbon\Carbon;
+    Carbon::setLocale('en');
     $rentang = Carbon::parse($datarq->start_date)->diffInDays(Carbon::parse($datarq->end_date));
     $rqid = $datarq->user_id;
     $aid = Auth::user()->id;
@@ -30,35 +31,48 @@
                             @endif
                             <a href="/" class="text-5xl text-black mt-2 hover:text-gray-700"><i class="fa-solid fa-house"></i></a>
                         </div>
-                        <div class="bg-white rounded-[28px] shadow-md card">
-                            @if ($stid != 4)
-                            @if ($ait == $datarq->tag_id)
-                            
-                            <div class="dropdown dropdown-top absolute right-0 bottom-0 m-3 rounded-[16px]">
-                                <div tabindex="0" role="button" class="btn m-1">Change Status</div>
-                                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-40 p-2 shadow">
-                                    @if ($datarq->status_id == 1 || $datarq->status_id == 2)
-                                    
-                                    <li><a href="/updatestatus/{{ $datarq->id }}/3" class="btn btn-warning text-white my-1 {{ $datarq->status_id == 3 ? 'hidden' : '' }}">Progress</a></li> 
-                                    
-                                    @else
-                                    
-                                    <li><a href="/updatestatus/{{ $datarq->id }}/4" class="btn btn-success text-white my-1 {{ $datarq->status_id == 4 ? 'hidden' : '' }}">Closed</a></li>
-                                    
+                        <div class="bg-white rounded-[28px] shadow-md card overflow-hidden">
+                            {{-- Action Buttons: Admin Approve/Reject & Change Status --}}
+                            <div class="absolute right-0 {{ $datarq->approval_status ? 'bottom-14' : 'bottom-0' }} m-3 flex items-center gap-2 z-10">
+                                @if (Auth::user()->usertype === 'admin')
+                                    @if ($datarq->approval_status != 'approved' && $datarq->approval_status != 'rejected')
+                                        <button type="button" onclick="approve_modal.showModal()" class="btn btn-sm btn-success text-white rounded-xl shadow">
+                                            <i class="fa-solid fa-check"></i> Approve
+                                        </button>
                                     @endif
-                                    {{-- <li><a href="/updatestatus/{{ $datarq->id }}/1" class="btn btn-error text-white my-1 {{ $datarq->status_id == 1 ? 'hidden' : '' }}">Urgent</a></li>
-                                    <li><a href="/updatestatus/{{ $datarq->id }}/2" class="btn btn-info text-white my-1 {{ $datarq->status_id == 2 ? 'hidden' : '' }}">Open</a></li> --}}
-                                </ul>
+
+                                    @if ($datarq->approval_status != 'rejected')
+                                        <button type="button" onclick="reject_modal.showModal()" class="btn btn-sm btn-error text-white rounded-xl shadow">
+                                            <i class="fa-solid fa-xmark"></i> Reject
+                                        </button>
+                                    @endif
+                                @endif
+
+                                @if ($stid != 4)
+                                @if ($ait == $datarq->tag_id)
+                                <div class="dropdown dropdown-top rounded-[16px]">
+                                    <div tabindex="0" role="button" class="btn btn-sm m-1">Change Status</div>
+                                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-40 p-2 shadow">
+                                        @if ($datarq->status_id == 1 || $datarq->status_id == 2)
+                                        <li><a href="/updatestatus/{{ $datarq->id }}/3" class="btn btn-warning text-white my-1 {{ $datarq->status_id == 3 ? 'hidden' : '' }}">Progress</a></li> 
+                                        @else
+                                        <li><a href="/updatestatus/{{ $datarq->id }}/4" class="btn btn-success text-white my-1 {{ $datarq->status_id == 4 ? 'hidden' : '' }}">Closed</a></li>
+                                        @endif
+                                    </ul>
+                                </div>
+                                @endif
+                                @endif
                             </div>
-                            @endif
-                            @endif
-                            <div class="absolute right-0 md:m-5 m-3 badge {{ $bg }} badge-lg rounded text-white">{{ $datarq->status->name }} 
-                                @if ($datarq->status_id == 3 || $datarq->status_id == 4)
-                                    
-                                @if ($reqlog != null)
-                                by {{ $reqlog->user->name }}
-                                @endif
-                                @endif
+                            <div class="absolute right-0 md:m-5 m-3 flex items-center gap-2">
+                                <span class="text-sm md:text-base font-bold text-gray-400 font-mono">#{{ $datarq->id }}</span>
+                                <div class="badge {{ $bg }} badge-lg rounded text-white">{{ $datarq->status->name }} 
+                                    @if ($datarq->status_id == 3 || $datarq->status_id == 4)
+                                        
+                                    @if ($reqlog != null)
+                                    by {{ $reqlog->user->name }}
+                                    @endif
+                                    @endif
+                                </div>
                             </div>
                             <div class="card-body">
                                 <h1 class="card-title text-2xl font-bold">{{ $datarq->judul }}</h1>
@@ -80,6 +94,51 @@
                                         <img src="{{ asset('img/tes5.jpg') }}" alt="" class="w-full">
                                     </div>
                                 </dialog>
+                                {{-- Modal Approve Confirmation --}}
+                                <dialog id="approve_modal" class="modal">
+                                    <div class="modal-box rounded-2xl max-w-md">
+                                        <form method="dialog">
+                                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                        </form>
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                                <i class="fa-solid fa-circle-check text-xl"></i>
+                                            </div>
+                                            <h3 class="font-bold text-lg text-gray-800">Setujui Request</h3>
+                                        </div>
+                                        <p class="py-2 text-sm text-gray-500">Apakah Anda yakin ingin menyetujui (Approve) request ini?</p>
+                                        <div class="modal-action">
+                                            <button type="button" onclick="approve_modal.close()" class="btn btn-ghost">Batal</button>
+                                            <form action="/request/{{ $datarq->id }}/approve" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success text-white font-bold">Ya, Setujui</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </dialog>
+                                {{-- Modal Reject Reason --}}
+                                <dialog id="reject_modal" class="modal">
+                                    <div class="modal-box rounded-2xl max-w-md">
+                                        <form method="dialog">
+                                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                        </form>
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
+                                                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                                            </div>
+                                            <h3 class="font-bold text-lg text-gray-800">Tolak Request</h3>
+                                        </div>
+                                        <p class="py-1 text-sm text-gray-500">Silakan masukkan alasan penolakan untuk request ini:</p>
+                                        <form action="/request/{{ $datarq->id }}/reject" method="POST">
+                                            @csrf
+                                            <textarea name="reason" rows="3" class="textarea textarea-bordered w-full rounded-xl focus:outline-none mt-2" placeholder="Tuliskan alasan penolakan..." required></textarea>
+                                            <div class="modal-action">
+                                                <button type="button" onclick="reject_modal.close()" class="btn btn-ghost">Batal</button>
+                                                <button type="submit" class="btn btn-error text-white font-bold">Tolak Request</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </dialog>
                                 <div class="card-actions justify-start">
                                     <div class="badge badge-secondary badge-lg text-white">{{ $datarq->outlet->nm_out }}</div>
                                 </div>
@@ -88,7 +147,7 @@
                                     <div class="badge badge-neutral badge-lg text-white">{{ $datarq->kategori->name }}</div>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold"><i class="fa-solid fa-hourglass-start"></i> Deadline: {{ Carbon::create($datarq->start_date)->toFormattedDayDateString() }} - {{ Carbon::create($datarq->end_date)->toFormattedDayDateString() }} 
+                                    <p class="text-sm font-bold"><i class="fa-solid fa-hourglass-start"></i> Deadline: {{ Carbon::parse($datarq->start_date)->translatedFormat('l, d-m-Y') }} - {{ Carbon::parse($datarq->end_date)->translatedFormat('l, d-m-Y') }} 
                                     @if ($rentang == 1)
                                         ({{ $rentang }} day)
                                     @else
@@ -96,17 +155,48 @@
                                     @endif</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold"><i class="fa-solid fa-calendar"></i> Posted: {{ Carbon::create($datarq->created_at)->toFormattedDayDateString() }} ({{ $datarq->created_at->diffForHumans() }})</p>
+                                    <p class="text-sm font-bold"><i class="fa-solid fa-calendar"></i> Posted: {{ Carbon::parse($datarq->created_at)->translatedFormat('l, d-m-Y') }} ({{ $datarq->created_at->diffForHumans() }})</p>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold">
-                                        <i class="fa-solid fa-file-pen"></i> Updated: {{ $datarq->updated_at->toFormattedDayDateString() }} ({{ $datarq->updated_at->diffForHumans() }})
+                                        <i class="fa-solid fa-file-pen"></i> Updated: {{ Carbon::parse($datarq->updated_at)->translatedFormat('l, d-m-Y') }} ({{ $datarq->updated_at->diffForHumans() }})
                                     </p>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold"><i class="fa-solid fa-user-pen"></i> {{ $datarq->user->name }}</p>
                                 </div>
                             </div>
+                            {{-- Bottom Approval / Rejection Bar --}}
+                            @if ($datarq->approval_status == 'approved')
+                            <div class="bg-emerald-500 text-white px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs md:text-sm font-medium">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check text-white text-base"></i>
+                                    <span>Approved by <b class="font-bold">{{ $datarq->approver->name ?? 'Admin' }}</b></span>
+                                </div>
+                                <div class="flex items-center gap-2 text-white">
+                                    <i class="fa-solid fa-clock text-xs"></i>
+                                    <span>{{ $datarq->approval_date ? Carbon::parse($datarq->approval_date)->translatedFormat('l, d-m-Y') . ' (' . Carbon::parse($datarq->approval_date)->diffForHumans() . ')' : '' }}</span>
+                                </div>
+                            </div>
+                            @elseif ($datarq->approval_status == 'rejected')
+                            <div class="bg-rose-500 text-white px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs md:text-sm font-medium">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-xmark text-white text-base"></i>
+                                    <span>Rejected by <b class="font-bold">{{ $datarq->approver->name ?? 'Admin' }}</b></span>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-3 text-white">
+                                    @if ($datarq->approval_note)
+                                    <div class="bg-rose-600/80 px-2.5 py-1 rounded-md text-xs">
+                                        <span>Alasan: <span class="italic font-normal">{{ $datarq->approval_note }}</span></span>
+                                    </div>
+                                    @endif
+                                    <div class="flex items-center gap-1.5 text-xs">
+                                        <i class="fa-solid fa-clock"></i>
+                                        <span>{{ $datarq->approval_date ? Carbon::parse($datarq->approval_date)->translatedFormat('l, d-m-Y') . ' (' . Carbon::parse($datarq->approval_date)->diffForHumans() . ')' : '' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         @if ($stid == 3)
                             

@@ -212,4 +212,53 @@ class RequestController extends Controller
         Alert::success('Request Deleted!');
         return redirect()->back();
     }
+
+    public function approveRequest($id){
+        if (Auth::user()->usertype !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $data = \App\Models\Request::findOrFail($id);
+        $data->update([
+            'approval_status' => 'approved',
+            'approved_by' => Auth::user()->id,
+            'approval_date' => now(),
+            'approval_note' => null
+        ]);
+
+        Alert::success('Request Approved!');
+        return redirect()->back();
+    }
+
+    public function rejectRequest(Request $request, $id){
+        if (Auth::user()->usertype !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'reason' => 'required|string|max:1000'
+        ]);
+
+        $data = \App\Models\Request::findOrFail($id);
+        $data->update([
+            'approval_status' => 'rejected',
+            'approved_by' => Auth::user()->id,
+            'approval_date' => now(),
+            'approval_note' => $request->reason,
+            'status_id' => 4
+        ]);
+
+        RequestLog::create([
+            'request_id' => $id,
+            'status_id' => 4,
+            'user_id' => Auth::user()->id
+        ]);
+
+        if ($data->user) {
+            $data->user->notify(new RequestStatusChanged($data));
+        }
+
+        Alert::success('Request Rejected!');
+        return redirect()->back();
+    }
 }

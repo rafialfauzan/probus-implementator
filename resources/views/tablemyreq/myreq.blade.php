@@ -12,8 +12,11 @@
                             @if (count($urgent) >= 1)
                                 @foreach ($urgent as $ur)
                                 <a href="/detailrequest/{{ $ur->id }}" class="mx-2">
-                                    <div class="card bg-white rounded-xl mt-3">
-                                        <div class="absolute right-0 m-3 badge badge-error rounded-[2px] text-white">Urgent</div>
+                                    <div class="card bg-white rounded-xl mt-3 overflow-hidden">
+                                        <div class="absolute right-0 m-3 flex items-center gap-1.5">
+                                            <span class="text-xs font-bold text-gray-400 font-mono">#{{ $ur->id }}</span>
+                                            <div class="badge badge-error rounded-[2px] text-white">Urgent</div>
+                                        </div>
                                         <div class="card-body">
                                             <h1 class="card-title font-bold">
                                                 {{ $ur->judul }} 
@@ -29,6 +32,21 @@
                                         <div class="justify-start pl-7">
                                             <div class="mb-3 text-xs"><i class="fa-solid fa-calendar"></i> Update: {{ $ur->updated_at->toFormattedDayDateString() }} ({{ $ur->updated_at->diffForHumans() }})</div>
                                         </div>
+                                        @if ($ur->approval_status == 'approved')
+                                        <div class="bg-emerald-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-check text-white text-sm"></i>
+                                                <span>Approved by <b class="font-bold">{{ $ur->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @elseif ($ur->approval_status == 'rejected')
+                                        <div class="bg-rose-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-xmark text-white text-sm"></i>
+                                                <span>Rejected by <b class="font-bold">{{ $ur->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </a> 
                                 @endforeach
@@ -39,8 +57,11 @@
                             @if (count($open) >= 1)
                                 @foreach ($open as $op)
                                 <a href="/detailrequest/{{ $op->id }}" class="mx-2">
-                                    <div class="card bg-white rounded-xl mt-3">
-                                        <div class="absolute right-0 m-3 badge badge-info rounded-[2px] text-white">Open</div>
+                                    <div class="card bg-white rounded-xl mt-3 overflow-hidden">
+                                        <div class="absolute right-0 m-3 flex items-center gap-1.5">
+                                            <span class="text-xs font-bold text-gray-400 font-mono">#{{ $op->id }}</span>
+                                            <div class="badge badge-info rounded-[2px] text-white">Open</div>
+                                        </div>
                                         <div class="card-body">
                                             <h1 class="card-title font-bold">
                                                 {{ $op->judul }}
@@ -56,6 +77,21 @@
                                         <div class="justify-start pl-7">
                                             <div class="mb-3 text-xs"><i class="fa-solid fa-calendar"></i> Update: {{ $op->updated_at->toFormattedDayDateString() }} ({{ $op->updated_at->diffForHumans() }})</div>
                                         </div>
+                                        @if ($op->approval_status == 'approved')
+                                        <div class="bg-emerald-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-check text-white text-sm"></i>
+                                                <span>Approved by <b class="font-bold">{{ $op->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @elseif ($op->approval_status == 'rejected')
+                                        <div class="bg-rose-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-xmark text-white text-sm"></i>
+                                                <span>Rejected by <b class="font-bold">{{ $op->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </a>
                                 @endforeach
@@ -66,8 +102,11 @@
                             @if (count($progress) >= 1)
                                 @foreach ($progress as $pr)
                                 <a href="/detailrequest/{{ $pr->id }}" class="mx-2">
-                                    <div class="card bg-white rounded-xl mt-3">
-                                        <div class="absolute right-0 m-3 badge badge-warning rounded-[2px] text-white">Progress</div>
+                                    <div class="card bg-white rounded-xl mt-3 overflow-hidden">
+                                        <div class="absolute right-0 m-3 flex items-center gap-1.5">
+                                            <span class="text-xs font-bold text-gray-400 font-mono">#{{ $pr->id }}</span>
+                                            <div class="badge badge-warning rounded-[2px] text-white">Progress</div>
+                                        </div>
                                         <div class="card-body">
                                             <h1 class="card-title font-bold">
                                                 {{ $pr->judul }} 
@@ -83,6 +122,21 @@
                                         <div class="justify-start pl-7">
                                             <div class="mb-3 text-xs"><i class="fa-solid fa-calendar"></i> Update: {{ $pr->updated_at->toFormattedDayDateString() }} ({{ $pr->updated_at->diffForHumans() }})</div>
                                         </div>
+                                        @if ($pr->approval_status == 'approved')
+                                        <div class="bg-emerald-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-check text-white text-sm"></i>
+                                                <span>Approved by <b class="font-bold">{{ $pr->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @elseif ($pr->approval_status == 'rejected')
+                                        <div class="bg-rose-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-xmark text-white text-sm"></i>
+                                                <span>Rejected by <b class="font-bold">{{ $pr->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </a>   
                                 @endforeach
@@ -93,8 +147,11 @@
                             @if (count($closed) >= 1)
                                 @foreach ($closed as $cl)
                                 <a href="/detailrequest/{{ $cl->id }}" class="mx-2">
-                                    <div class="card bg-white rounded-xl mt-3">
-                                        <div class="absolute right-0 m-3 badge badge-success rounded-[2px] text-white">Closed</div>
+                                    <div class="card bg-white rounded-xl mt-3 overflow-hidden">
+                                        <div class="absolute right-0 m-3 flex items-center gap-1.5">
+                                            <span class="text-xs font-bold text-gray-400 font-mono">#{{ $cl->id }}</span>
+                                            <div class="badge badge-success rounded-[2px] text-white">Closed</div>
+                                        </div>
                                         <div class="card-body">
                                             <h1 class="card-title font-bold">
                                                 {{ $cl->judul }} 
@@ -110,6 +167,21 @@
                                         <div class="justify-start pl-7">
                                             <div class="mb-3 text-xs"><i class="fa-solid fa-calendar"></i> Update: {{ $cl->updated_at->toFormattedDayDateString() }} ({{ $cl->updated_at->diffForHumans() }})</div>
                                         </div>
+                                        @if ($cl->approval_status == 'approved')
+                                        <div class="bg-emerald-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-check text-white text-sm"></i>
+                                                <span>Approved by <b class="font-bold">{{ $cl->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @elseif ($cl->approval_status == 'rejected')
+                                        <div class="bg-rose-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa-solid fa-circle-xmark text-white text-sm"></i>
+                                                <span>Rejected by <b class="font-bold">{{ $cl->approver->name ?? 'Admin' }}</b></span>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </a> 
                                 @endforeach

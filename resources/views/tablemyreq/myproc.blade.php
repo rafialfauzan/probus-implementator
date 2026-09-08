@@ -32,8 +32,11 @@
                     <div class="grid md:grid-cols-4 grid-rows-1">
                         @foreach ($data as $rq)
                         <a href="/detailrequest/{{ $rq->id }}" class="mx-2">
-                            <div class="card bg-white rounded-xl mt-3">
-                                <div class="absolute right-0 m-3 badge {{ $status }} rounded-[2px] text-white">{{ $rq->status->name }}</div>
+                            <div class="card bg-white rounded-xl mt-3 overflow-hidden">
+                                <div class="absolute right-0 m-3 flex items-center gap-1.5">
+                                    <span class="text-xs font-bold text-gray-400 font-mono">#{{ $rq->id }}</span>
+                                    <div class="badge {{ $status }} rounded-[2px] text-white">{{ $rq->status->name }}</div>
+                                </div>
                                 <div class="card-body">
                                     <h1 class="card-title font-bold">
                                         {{ $rq->judul }} 
@@ -49,6 +52,21 @@
                                 <div class="justify-start pl-7">
                                     <div class="mb-3 text-xs"><i class="fa-solid fa-calendar"></i> Update: {{ $rq->updated_at->toFormattedDayDateString() }} ({{ $rq->updated_at->diffForHumans() }})</div>
                                 </div>
+                                @if ($rq->approval_status == 'approved')
+                                <div class="bg-emerald-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-circle-check text-white text-sm"></i>
+                                        <span>Approved by <b class="font-bold">{{ $rq->approver->name ?? 'Admin' }}</b></span>
+                                    </div>
+                                </div>
+                                @elseif ($rq->approval_status == 'rejected')
+                                <div class="bg-rose-500 text-white px-5 py-2 flex items-center justify-between text-xs font-medium">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-circle-xmark text-white text-sm"></i>
+                                        <span>Rejected by <b class="font-bold">{{ $rq->approver->name ?? 'Admin' }}</b></span>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </a>
                         @endforeach
