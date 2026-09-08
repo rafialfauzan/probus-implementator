@@ -219,6 +219,12 @@ class RequestController extends Controller
         }
 
         $data = \App\Models\Request::findOrFail($id);
+
+        if (!in_array($data->status_id, [1, 2])) {
+            Alert::error('Request hanya dapat diapprove jika berstatus Open atau Urgent!');
+            return redirect()->back();
+        }
+
         $data->update([
             'approval_status' => 'approved',
             'approved_by' => Auth::user()->id,
@@ -240,6 +246,12 @@ class RequestController extends Controller
         ]);
 
         $data = \App\Models\Request::findOrFail($id);
+
+        if (!in_array($data->status_id, [1, 2])) {
+            Alert::error('Request hanya dapat direject jika berstatus Open atau Urgent!');
+            return redirect()->back();
+        }
+
         $data->update([
             'approval_status' => 'rejected',
             'approved_by' => Auth::user()->id,

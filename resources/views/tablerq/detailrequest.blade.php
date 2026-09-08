@@ -34,7 +34,7 @@
                         <div class="bg-white rounded-[28px] shadow-md card overflow-hidden">
                             {{-- Action Buttons: Admin Approve/Reject & Change Status --}}
                             <div class="absolute right-0 {{ $datarq->approval_status ? 'bottom-14' : 'bottom-0' }} m-3 flex items-center gap-2 z-10">
-                                @if (Auth::user()->usertype === 'admin')
+                                @if (Auth::user()->usertype === 'admin' && in_array($datarq->status_id, [1, 2]))
                                     @if ($datarq->approval_status != 'approved' && $datarq->approval_status != 'rejected')
                                         <button type="button" onclick="approve_modal.showModal()" class="btn btn-sm btn-success text-white rounded-xl shadow">
                                             <i class="fa-solid fa-check"></i> Approve
@@ -94,6 +94,7 @@
                                         <img src="{{ asset('img/tes5.jpg') }}" alt="" class="w-full">
                                     </div>
                                 </dialog>
+                                @if (Auth::user()->usertype === 'admin' && in_array($datarq->status_id, [1, 2]))
                                 {{-- Modal Approve Confirmation --}}
                                 <dialog id="approve_modal" class="modal">
                                     <div class="modal-box rounded-2xl max-w-md">
@@ -139,6 +140,7 @@
                                         </form>
                                     </div>
                                 </dialog>
+                                @endif
                                 <div class="card-actions justify-start">
                                     <div class="badge badge-secondary badge-lg text-white">{{ $datarq->outlet->nm_out }}</div>
                                 </div>
