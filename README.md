@@ -20,8 +20,6 @@ Probus Implementator is a system that manages several features used by the Probu
 composer install
 cp .env.example .env
 php artisan key:generate
-# Make sure you have connected the database to .env before migrate
-php artisan migrate:fresh --seed
 ```
 
 ## Usage
